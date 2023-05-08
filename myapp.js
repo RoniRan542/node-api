@@ -5,20 +5,10 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const dotenv = require('dotenv')
-// const path = require('path')
-// const absolute = path.resolve(__dirname);
-// console.log(absolute)
-// const os = require('os')
-// const currentOs = {
-//     name: os.type(),
-//     user: os.userInfo(),
-//     uptime: os.uptime(),
-//     release: os.release(),
-//     totalMem: os.totalmem(),
-//     freeMem: os.freemem()
-// }
-// console.log(currentOs);
 
+// take in routes
+const postRoutes = require('./routes/post')
+const userRoutes = require('./routes/user')
 dotenv.config()
 
 // db
@@ -30,8 +20,6 @@ mongoose.connect(process.env.MONGO_URI)
 mongoose.connection.on("error", err => {
     console.log(`DB Connection error: ${err.message}`);
 });
-// take in routes
-const postRoutes = require('./routes/post')
 
 
 
@@ -40,7 +28,8 @@ const postRoutes = require('./routes/post')
 app.use(morgan("dev"));
 app.use(bodyParser.json());// any request with a 'body' will be parssed to json format
 app.use(expressValidator());
-app.use('/', postRoutes);
+app.use('/posts', postRoutes);
+app.use('/users', userRoutes);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {console.log(`listening on port: ${port}`)});
